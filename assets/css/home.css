@@ -10,3 +10,12 @@
     height: 252px;
     margin: 10px,10px,10px,10px;
 }
+
+
+topSide{
+    height: 80px;
+}
+
+leftSide{
+    width: 20%;
+}
