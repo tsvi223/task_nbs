@@ -12,6 +12,7 @@
     "http":"*",
     "request":"*",
     "mongodb":"*",
-    "x-ray":"*"
+    "x-ray":"*",
+    "mysql":"*"
   }
 }
