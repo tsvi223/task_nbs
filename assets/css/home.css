@@ -1,0 +1,12 @@
+.car-row{
+    cursor: pointer;
+}
+
+.details_car{
+
+}
+.details_car img{
+    width: 590px;
+    height: 252px;
+    margin: 10px,10px,10px,10px;
+}
