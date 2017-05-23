@@ -66,10 +66,14 @@ function req(method , url , options , body){
 // })
 
 
-req('GET' , 'http://www.boi.org.il/_layouts/boi/handlers/WebPartHandler.aspx?wp=RestrictedAccountsSearch&lang=en&Bank=1000&Branch=642&Account=6371').then(function(html){
+req('GET' ,
+'http://www.boi.org.il/_layouts/boi/handlers/WebPartHandler.aspx?wp=RestrictedAccountsSearch&lang=en&Company=300446887'
+).then(function(html){
     var x = xray();
-    x(html ,'div .BoiRestrictedAccountsNotRestricted' , { txt : '@html' }  )(function(err , obj){
-        console.log(obj.txt.trim());
+    //console.log(html);
+    x(html ,'div .BoiRestrictedCircumstancesCaseResult div' , { txt : '@html' }  )(function(err , obj){
+        var txt =  obj.txt.trim().replace(/Number  does|<span class="BoiRestrictedCircumstancesCaseId"><\/span>/g , '')
+        console.log(txt.indexOf('not appear on the list'));
     })
 
 })

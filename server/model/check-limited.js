@@ -4,7 +4,7 @@ var xray = require('x-ray');
 var q = require('q');
 
 
-function checkLimitedScraping(bank , branch , acount_number){ return  q('correct')
+function checkLimitedScrapingAccount(bank , branch , acount_number){ return  q('correct')
     var d = q.defer();
     var url = 'http://www.boi.org.il/_layouts/boi/handlers/WebPartHandler.aspx?wp=RestrictedAccountsSearch&lang=en&' +
               'Bank=' + bank + '&Branch=' + branch + '&Account=' + acount_number;
@@ -21,17 +21,19 @@ function checkLimitedScraping(bank , branch , acount_number){ return  q('correct
     return d.promise;
 }
 
-function checkLimitedScrapingPersonal(){
+function checkLimitedScrapingPersonal(id){
     var d = q.defer();
-    var url = 'http://www.boi.org.il/_layouts/boi/handlers/WebPartHandler.aspx?wp=RestrictedAccountsSearch&lang=en&' +
-              'Bank=' + bank + '&Branch=' + branch + '&Account=' + acount_number;
+    var url = 'http://www.boi.org.il/_layouts/boi/handlers/WebPartHandler.aspx?wp=RestrictedAccountsSearch' +
+                '&lang=en&Company=' + id
+
     req.action('GET' , url).then(function(html){
         var x = xray();
-        x(html ,'div .BoiRestrictedAccountsNotRestricted' , { txt : '@html' }  )(function(err , obj){
-            var result = obj.txt.trim();
-            if(result == 'The account number you have entered is not on the list of restricted accounts')
-                return d.resolve('correct');
-            else return d.resolve('limited');
+        x(html ,'div .BoiRestrictedCircumstancesCaseResult div' , { txt : '@html' }  )(function(err , obj){
+            var txt =  obj.txt.trim().replace(/Number  does|<span class="BoiRestrictedCircumstancesCaseId"><\/span>/g , '')
+            if(txt.indexOf('not appear on the list') == -1)
+                return d.resolve('limited')
+            else
+                return d.resolve('correct')
         })
 
     })
@@ -67,7 +69,7 @@ module.exports.action = function(req , res , next){
             })
         }
         case 'scrape-personal' : {
-            checkLimitedScrapingPersonal(req.body.bank , req.body.branch , req.body.account).then(function(status){
+            checkLimitedScrapingPersonal(req.body.id).then(function(status){
                 return res.json({ status : status })
             })
         }

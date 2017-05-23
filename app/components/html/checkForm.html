@@ -10,7 +10,10 @@
             <div class="row">
                 <div class="col-sm-4" ng-repeat='item in $ctrl.list_inputs'>
                     <div class="input_details" >
-                        <input class='' ng-model='$ctrl[item.name]' ng-change="$ctrl.changeD()">
+
+                        <input ng-if='item.name != "IDPerson"' class='' ng-model='$ctrl[item.name]' ng-change="$ctrl.changeD()">
+                        <input ng-if='item.name == "IDPerson"' class='' ng-model='$ctrl[item.name]' ng-change="$ctrl.changePerson()">
+
                         <div class="">
                             <small>{{item.txt}}</small>
                             <span > <i class="fa "
