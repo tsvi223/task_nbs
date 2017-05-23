@@ -4,13 +4,13 @@ var xray = require('x-ray');
 var q = require('q');
 
 
-function checkLimitedScrapingAccount(bank , branch , acount_number){ return  q('correct')
+function checkLimitedScrapingAccount(bank , branch , acount_number){
     var d = q.defer();
     var url = 'http://www.boi.org.il/_layouts/boi/handlers/WebPartHandler.aspx?wp=RestrictedAccountsSearch&lang=en&' +
               'Bank=' + bank + '&Branch=' + branch + '&Account=' + acount_number;
     req.action('GET' , url).then(function(html){
         var x = xray();
-        x(html ,'div .BoiRestrictedAccountsNotRestricted' , { txt : '@html' }  )(function(err , obj){
+        x(html ,'div .BoiRestrictedAccountsNotRestricted' , { txt : '@html' }  )(function(err , obj){ console.log(obj);
             var result = obj.txt.trim();
             if(result == 'The account number you have entered is not on the list of restricted accounts')
                 return d.resolve('correct');
@@ -28,7 +28,7 @@ function checkLimitedScrapingPersonal(id){
 
     req.action('GET' , url).then(function(html){
         var x = xray();
-        x(html ,'div .BoiRestrictedCircumstancesCaseResult div' , { txt : '@html' }  )(function(err , obj){
+        x(html ,'div .BoiRestrictedCircumstancesCaseResult div' , { txt : '@html' }  )(function(err , obj){ console.log(obj);
             var txt =  obj.txt.trim().replace(/Number  does|<span class="BoiRestrictedCircumstancesCaseId"><\/span>/g , '')
             if(txt.indexOf('not appear on the list') == -1)
                 return d.resolve('limited')
@@ -55,7 +55,7 @@ function checkLimitedDB(bank , branch , acount_number){
     })
 }
 
-module.exports.action = function(req , res , next){
+module.exports.action = function(req , res , next){ console.log(req.params.action);
     switch (req.params.action) {
         case 'sql' : {
             checkLimitedDB(req.body.bank , req.body.branch , req.body.account).then(function(status){
