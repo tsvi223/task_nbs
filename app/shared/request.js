@@ -15,12 +15,12 @@ function serverRequest($http,$rootScope,  $q){
             options.data = data;
         }
         else options.method = 'GET';
-            $http(options).then(function success(res) {
-                console.log('req' , res);
-                return d.resolve(res.data);``
-            }, function error(error){
-                return d.reject(error);
-            });
+        $http(options).then(function success(res) {
+            console.log('req' , res);
+            return d.resolve(res.data);
+        }, function error(error){
+            return d.reject(error);
+        });
 
         return d.promise;
     };

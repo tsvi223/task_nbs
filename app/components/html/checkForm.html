@@ -1,0 +1,25 @@
+
+<div class="row input_form">
+        <h3>בדיקת חשבון מוגבל</h3>
+        <div class="row">
+            <div class=" col-sm-12">
+                <text > פרטי ציק</text>
+            </div>
+
+        </div>
+            <div class="row">
+                <div class="col-sm-4" ng-repeat='item in $ctrl.list_inputs'>
+                    <div class="input_details" >
+                        <input class='' ng-model='$ctrl[item.name]' ng-change="$ctrl.changeD()">
+                        <div class="">
+                            <small>{{item.txt}}</small>
+                            <span > <i class="fa "
+                                 ng-class='{ "fa-check-circle-o green" : $ctrl.status=="correct"  ,  "fa-times-circle-o red" : $ctrl.status=="limited",
+                                            "fa-spinner" :   $ctrl.status=="pending"   }' ng-show='item.status == true'></i></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+</div>

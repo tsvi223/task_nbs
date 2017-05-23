@@ -1,14 +1,11 @@
 
-
 app.component('appElement', {
     transclude: true,
-    template :  "<top-side></top-side>" +
-                "<left-side/></left-side/>" +
-                "<account-limited></account-limited> <ng-outlet></ng-outlet>" ,
+    template :  "<top-side class='col-md-12'></top-side>" +
+                "<left-side  class='col-md-3'></left-side>" +
+                "<account-limited class='col-md-9'></account-limited> <ng-outlet></ng-outlet>" ,
     bindings : {
         status : '<',
-        onChange : '=',
-        setStatus : '<'
     },
     scope : {
         status : 'yes'

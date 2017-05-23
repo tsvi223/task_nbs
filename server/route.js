@@ -7,6 +7,6 @@ module.exports = function(app) {
             return res.send(data.toString());
         })
 	})
-	app.all('/checkLimited' , check_limited.action)
+	app.all('/checkLimited/:action' , check_limited.action)
 
 }
