@@ -1,20 +1,32 @@
 var DBAccountLimited = require('../db/accounts-limited');
-var req = require('./req');
+var request = require('./req');
 var xray = require('x-ray');
 var q = require('q');
 
 
-function checkLimitedScrapingAccount(bank , branch , acount_number){
+function checkLimitedScrapingAccount(bank , branch , acount_number){  console.log(bank , branch , acount_number);
     var d = q.defer();
     var url = 'http://www.boi.org.il/_layouts/boi/handlers/WebPartHandler.aspx?wp=RestrictedAccountsSearch&lang=en&' +
               'Bank=' + bank + '&Branch=' + branch + '&Account=' + acount_number;
-    req.action('GET' , url).then(function(html){
+    request.action('GET' , url).then(function(html){
         var x = xray();
-        x(html ,'div .BoiRestrictedAccountsNotRestricted' , { txt : '@html' }  )(function(err , obj){ console.log(obj);
-            var result = obj.txt.trim();
-            if(result == 'The account number you have entered is not on the list of restricted accounts')
-                return d.resolve('correct');
-            else return d.resolve('limited');
+        x(html ,'div .BoiRestrictedAccountsRestricted' , { txt : '@html' }  )(function(err , obj){ console.log(obj);
+            if(!obj.txt) return  d.resolve({status : 'correct'});
+            var result_xray = obj.txt.trim();
+            if(result_xray == 'The account number you have entered is not on the list of restricted accounts'){         console.log('result if :: ');
+              var result = {
+                status : 'correct'
+              }
+            }
+            else{
+              var expired = result_xray.replace(/Restricted account until|\r|\n|\s|/g, "").trim();
+              console.log(expired);
+              var result = {
+                status : 'limited',
+                expired : expired
+              }
+            }
+            return d.resolve(result);
         })
 
     })
@@ -26,7 +38,7 @@ function checkLimitedScrapingPersonal(id){
     var url = 'http://www.boi.org.il/_layouts/boi/handlers/WebPartHandler.aspx?wp=RestrictedAccountsSearch' +
                 '&lang=en&Company=' + id
 
-    req.action('GET' , url).then(function(html){
+    request.action('GET' , url).then(function(html){
         var x = xray();
         x(html ,'div .BoiRestrictedCircumstancesCaseResult div' , { txt : '@html' }  )(function(err , obj){ console.log(obj);
             var txt =  obj.txt.trim().replace(/Number  does|<span class="BoiRestrictedCircumstancesCaseId"><\/span>/g , '')
@@ -65,17 +77,15 @@ module.exports.action = function(req , res , next){ console.log(req.params.actio
         break;
         case 'scrape-account' : {
             checkLimitedScrapingAccount(req.body.bank , req.body.branch , req.body.account).then(function(status){
-                return res.json({ status : status })
+                return res.json(status)
             })
         }
+        break;
         case 'scrape-personal' : {
             checkLimitedScrapingPersonal(req.body.id).then(function(status){
                 return res.json({ status : status })
             })
         }
         break;
-        default:
-
     }
-
 }

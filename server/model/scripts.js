@@ -77,3 +77,14 @@ req('GET' ,
     })
 
 })
+
+
+
+
+
+var arr = [ {a : 1} , { b : 2 } ];
+
+var filt =  arr.filter(function(item){
+    if(item['a'] == 2 ) return item;
+})
+console.log();
